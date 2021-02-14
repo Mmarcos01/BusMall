@@ -81,8 +81,6 @@ function renderItems() {
   allItems[indexArray[2]].views++;
 }
 
-// renderItems();
-
 function renderResult() {
   let resultList = document.querySelector('ul');
   for (let i = 0; i < allItems.length; i++) {
@@ -94,7 +92,7 @@ function renderResult() {
 
 function handleClick(event) {
   if (event.target === resultData) {
-    alert('Please, select an image.');
+    alert('Please select an image.');
   }
 
   totalClicks++;
