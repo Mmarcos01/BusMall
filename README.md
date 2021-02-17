@@ -8,3 +8,4 @@ Build an app that displays potential products to individuals in focus groups (th
 
 ### Links and Resources
 https://meyerweb.com/eric/tools/css/reset/
+https://www.jsdelivr.com/package/npm/chart.js
