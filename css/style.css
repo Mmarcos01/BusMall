@@ -53,3 +53,8 @@ li {
   font-family: 'Rubik', sans-serif;
   line-height: 24px;
 }
+
+#chart {
+  margin-top: 30px;
+  background-color: white;
+}

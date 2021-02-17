@@ -1,10 +1,5 @@
 'use strict';
 
-// Create a constructor function that creates an object associated with each product, and has the following properties:
-// Name of the product
-// File path of image
-// Times the image has been shown
-
 let totalClicks = 0;
 let clicksAllowed = 25;
 let allItems = [];
@@ -12,7 +7,7 @@ let imageOne = document.querySelector('section img:first-child');
 let imageTwo = document.querySelector('section img:nth-child(2)');
 let imageThree = document.querySelector('section img:nth-child(3)');
 let resultData = document.querySelector('section');
-let resultButton = document.querySelector('div');
+// let resultButton = document.querySelector('div');
 
 
 function Item(name, fileExt = 'jpg') {
@@ -48,75 +43,118 @@ function itemsRandomIndex() {
   return Math.floor(Math.random() * allItems.length);
 }
 
-// Create an algorithm that will randomly generate three unique product images from the images directory and display them side-by-side-by-side in the browser window.
+let indexArrayCount = 6;
+let indexArray = [];
 
 function renderItems() {
-  let indexArray = [];
-  indexArray[0] = itemsRandomIndex();
-  indexArray[1] = itemsRandomIndex();
-  indexArray[2] = itemsRandomIndex();
-  while (indexArray[0] === indexArray[1]) {
-    indexArray[1] = itemsRandomIndex();
-    console.log('duplicate found');
-  }
-  while (indexArray[1] === indexArray[2]) {
-    indexArray[2] = itemsRandomIndex();
-  }
-  while (indexArray[2] === indexArray[0]) {
-    indexArray[0] = itemsRandomIndex();
-  }
-  console.log(indexArray);
-
-
-  imageOne.src = allItems[indexArray[0]].src;
-  imageOne.title = allItems[indexArray[0]].name;
-  allItems[indexArray[0]].views++;
-
-  imageTwo.src = allItems[indexArray[1]].src;
-  imageTwo.title = allItems[indexArray[1]].name;
-  allItems[indexArray[1]].views++;
-
-  imageThree.src = allItems[indexArray[2]].src;
-  imageThree.title = allItems[indexArray[2]].name;
-  allItems[indexArray[2]].views++;
-}
-
-function renderResult() {
-  let resultList = document.querySelector('ul');
-  for (let i = 0; i < allItems.length; i++) {
-    let liElem = document.createElement('li');
-    liElem.textContent = `${allItems[i].name}: ${allItems[i].clicks} votes and seen ${allItems[i].views} times.`;
-    resultList.appendChild(liElem);
-  }
-}
-
-function handleClick(event) {
-  if (event.target === resultData) {
-    alert('Please select an image.');
-  }
-
-  totalClicks++;
-  let itemClicked = event.target.title;
-
-  for (let i = 0; i < allItems.length; i++) {
-    if (itemClicked === allItems[i].name) {
-      allItems[i].clicks++;
+  while (indexArray.length < indexArrayCount) {
+    let randomNumber = itemsRandomIndex();
+    while (!indexArray.includes(randomNumber)) {
+      indexArray.push(randomNumber);
     }
   }
 
-  renderItems();
-  if (totalClicks === clicksAllowed) {
-    resultData.removeEventListener('click', handleClick);
-  }
-}
+  // console.log(indexArray);
 
-function handleButtonClick(event) {
-  if (totalClicks === clicksAllowed) {
-    renderResult();
+  let firstItemIndex = indexArray.shift();
+  let secondItemIndex = indexArray.shift();
+  let thirdItemIndex = indexArray.shift();
+
+  imageOne.src = allItems[firstItemIndex].src;
+  imageOne.title = allItems[firstItemIndex].name;
+  allItems[firstItemIndex].views++;
+
+  imageTwo.src = allItems[secondItemIndex].src;
+  imageTwo.title = allItems[secondItemIndex].name;
+  allItems[secondItemIndex].views++;
+
+  imageThree.src = allItems[thirdItemIndex].src;
+  imageThree.title = allItems[thirdItemIndex].name;
+  allItems[thirdItemIndex].views++;
+
+  // function renderResult() {
+  //   let resultList = document.querySelector('ul');
+  //   for (let i = 0; i < allItems.length; i++) {
+  //     let liElem = document.createElement('li');
+  //     liElem.textContent = `${allItems[i].name}: ${allItems[i].clicks} votes and seen ${allItems[i].views} times.`;
+  //     resultList.appendChild(liElem);
+  //   }
+  // }
+
+  function handleClick(event) {
+    if (event.target === resultData) {
+      alert('Please select an image.');
+    }
+
+    totalClicks++;
+    let itemClicked = event.target.title;
+
+    for (let i = 0; i < allItems.length; i++) {
+      if (itemClicked === allItems[i].name) {
+        allItems[i].clicks++;
+      }
+    }
+
+    renderItems();
+    if (totalClicks === clicksAllowed) {
+      resultData.removeEventListener('click', handleClick);
+      renderChart();
+    }
   }
+
+  // function handleButtonClick(event) {
+  //   if (totalClicks === clicksAllowed) {
+  //     renderResult();
+  //   }
+  // }
+  resultData.addEventListener('click', handleClick);
+
+  // resultButton.addEventListener('click', handleButtonClick);
 }
 
 renderItems();
 
-resultData.addEventListener('click', handleClick);
-resultButton.addEventListener('click', handleButtonClick);
+function renderChart() {
+  let itemNames = [];
+  let itemViews = [];
+  let itemClicks = [];
+  for (let i = 0; i < allItems.length; i++) {
+    itemNames.push(allItems[i].name);
+    itemViews.push(allItems[i].views);
+    itemClicks.push(allItems[i].clicks);
+  }
+  let chartObject = {
+    type: 'bar',
+    data: {
+      labels: itemNames,
+      datasets: [{
+        label: 'Views',
+        data: itemViews,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Clicks',
+        data: itemClicks,
+        backgroundColor: 'blue',
+        borderColor: 'blue',
+        borderWidth: 1,
+      }],
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            stepSize: 1,
+          },
+        }],
+      },
+    },
+  };
+  let ctx = document.getElementById('myChart').getContext('2d');
+  let myChart = new Chart(ctx, chartObject);
+}
+
+renderChart();
