@@ -3,12 +3,12 @@
 let totalClicks = 0;
 let clicksAllowed = 25;
 let allItems = [];
+let indexArrayCount = 6;
+let indexArray = [];
 let imageOne = document.querySelector('section img:first-child');
 let imageTwo = document.querySelector('section img:nth-child(2)');
 let imageThree = document.querySelector('section img:nth-child(3)');
 let resultData = document.querySelector('section');
-// let resultButton = document.querySelector('div');
-
 
 function Item(name, fileExt = 'jpg') {
   this.name = name;
@@ -43,9 +43,6 @@ function itemsRandomIndex() {
   return Math.floor(Math.random() * allItems.length);
 }
 
-let indexArrayCount = 6;
-let indexArray = [];
-
 function renderItems() {
   while (indexArray.length < indexArrayCount) {
     let randomNumber = itemsRandomIndex();
@@ -54,7 +51,7 @@ function renderItems() {
     }
   }
 
-  // console.log(indexArray);
+  console.log(indexArray);
 
   let firstItemIndex = indexArray.shift();
   let secondItemIndex = indexArray.shift();
@@ -71,45 +68,26 @@ function renderItems() {
   imageThree.src = allItems[thirdItemIndex].src;
   imageThree.title = allItems[thirdItemIndex].name;
   allItems[thirdItemIndex].views++;
+}
+function handleClick(event) {
+  if (event.target === resultData) {
+    alert('Please select an image.');
+  }
 
-  // function renderResult() {
-  //   let resultList = document.querySelector('ul');
-  //   for (let i = 0; i < allItems.length; i++) {
-  //     let liElem = document.createElement('li');
-  //     liElem.textContent = `${allItems[i].name}: ${allItems[i].clicks} votes and seen ${allItems[i].views} times.`;
-  //     resultList.appendChild(liElem);
-  //   }
-  // }
+  totalClicks++;
+  let itemClicked = event.target.title;
 
-  function handleClick(event) {
-    if (event.target === resultData) {
-      alert('Please select an image.');
-    }
-
-    totalClicks++;
-    let itemClicked = event.target.title;
-
-    for (let i = 0; i < allItems.length; i++) {
-      if (itemClicked === allItems[i].name) {
-        allItems[i].clicks++;
-      }
-    }
-
-    renderItems();
-    if (totalClicks === clicksAllowed) {
-      resultData.removeEventListener('click', handleClick);
-      renderChart();
+  for (let i = 0; i < allItems.length; i++) {
+    if (itemClicked === allItems[i].name) {
+      allItems[i].clicks++;
     }
   }
 
-  // function handleButtonClick(event) {
-  //   if (totalClicks === clicksAllowed) {
-  //     renderResult();
-  //   }
-  // }
-  resultData.addEventListener('click', handleClick);
-
-  // resultButton.addEventListener('click', handleButtonClick);
+  renderItems();
+  if (totalClicks === clicksAllowed) {
+    resultData.removeEventListener('click', handleClick);
+    renderChart();
+  }
 }
 
 renderItems();
@@ -130,31 +108,49 @@ function renderChart() {
       datasets: [{
         label: 'Views',
         data: itemViews,
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        borderColor: 'black',
         borderWidth: 1,
       },
       {
         label: 'Clicks',
         data: itemClicks,
-        backgroundColor: 'blue',
-        borderColor: 'blue',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        borderColor: 'black',
         borderWidth: 1,
       }],
     },
     options: {
+      legend: {
+        labels: {
+          fontColor: 'black',
+        },
+      },
       scales: {
+        xAxes: [{
+          ticks: {
+            fontColor: 'black',
+          },
+          gridLines: {
+            color: 'rgb(67, 112, 112)',
+          },
+        }],
         yAxes: [{
           ticks: {
             beginAtZero: true,
             stepSize: 1,
+            fontColor: 'black',
+          },
+          gridLines: {
+            color: 'rgb(67, 112, 112)',
           },
         }],
       },
     },
   };
+
   let ctx = document.getElementById('myChart').getContext('2d');
-  let myChart = new Chart(ctx, chartObject);
+  let myChart = new Chart(ctx, chartObject); //eslint-disable-line
 }
 
-renderChart();
+resultData.addEventListener('click', handleClick);
