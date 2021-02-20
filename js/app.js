@@ -18,29 +18,43 @@ function Item(name, fileExt = 'jpg') {
   allItems.push(this);
 }
 
-new Item('usb', 'gif');
-new Item('sweep', 'png');
-new Item('bag');
-new Item('banana');
-new Item('bathroom');
-new Item('boots');
-new Item('breakfast');
-new Item('bubblegum');
-new Item('chair');
-new Item('cthulhu');
-new Item('dog-duck');
-new Item('dragon');
-new Item('pen');
-new Item('pet-sweep');
-new Item('scissors');
-new Item('shark');
-new Item('tauntaun');
-new Item('unicorn');
-new Item('water-can');
-new Item('wine-glass');
+let retrievedItems = localStorage.getItem('items');
+
+if(retrievedItems) {
+  let parsedItems = JSON.parse(retrievedItems);
+  allItems = parsedItems;
+} else {
+  new Item('usb', 'gif');
+  new Item('sweep', 'png');
+  new Item('bag');
+  new Item('banana');
+  new Item('bathroom');
+  new Item('boots');
+  new Item('breakfast');
+  new Item('bubblegum');
+  new Item('chair');
+  new Item('cthulhu');
+  new Item('dog-duck');
+  new Item('dragon');
+  new Item('pen');
+  new Item('pet-sweep');
+  new Item('scissors');
+  new Item('shark');
+  new Item('tauntaun');
+  new Item('unicorn');
+  new Item('water-can');
+  new Item('wine-glass');
+}
 
 function itemsRandomIndex() {
   return Math.floor(Math.random() * allItems.length);
+}
+
+function imageRender(imageIndex, imageElement) {
+  imageElement.src = allItems[imageIndex].src;
+  imageElement.title = allItems[imageIndex].name;
+  allItems[imageIndex].views++;
+
 }
 
 function renderItems() {
@@ -50,25 +64,17 @@ function renderItems() {
       indexArray.push(randomNumber);
     }
   }
-
-  console.log(indexArray);
+  // console.log(indexArray);
 
   let firstItemIndex = indexArray.shift();
   let secondItemIndex = indexArray.shift();
   let thirdItemIndex = indexArray.shift();
 
-  imageOne.src = allItems[firstItemIndex].src;
-  imageOne.title = allItems[firstItemIndex].name;
-  allItems[firstItemIndex].views++;
-
-  imageTwo.src = allItems[secondItemIndex].src;
-  imageTwo.title = allItems[secondItemIndex].name;
-  allItems[secondItemIndex].views++;
-
-  imageThree.src = allItems[thirdItemIndex].src;
-  imageThree.title = allItems[thirdItemIndex].name;
-  allItems[thirdItemIndex].views++;
+  imageRender(firstItemIndex, imageOne);
+  imageRender(secondItemIndex, imageTwo);
+  imageRender(thirdItemIndex, imageThree);
 }
+
 function handleClick(event) {
   if (event.target === resultData) {
     alert('Please select an image.');
@@ -87,6 +93,9 @@ function handleClick(event) {
   if (totalClicks === clicksAllowed) {
     resultData.removeEventListener('click', handleClick);
     renderChart();
+    let stringifiedItems = JSON.stringify(allItems);
+    // console.log(stringifiedItems);
+    localStorage.setItem('items', stringifiedItems);
   }
 }
 
