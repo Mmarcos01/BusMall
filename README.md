@@ -2,7 +2,7 @@
 
 ## BusMall
 
-Build an app that displays potential products to individuals in focus groups (three products at a time, side-by-side-by-side) no duplicate product images should display concurrently. Track and display user data of votes and views.
+Build an app that displays potential products to individuals in focus groups (three products at a time, side-by-side-by-side) no duplicate product images should display concurrently. Track and display user data of votes and views with a responsive chart.
 
 ### Author: Marie Marcos
 

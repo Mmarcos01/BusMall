@@ -64,7 +64,6 @@ function renderItems() {
       indexArray.push(randomNumber);
     }
   }
-  // console.log(indexArray);
 
   let firstItemIndex = indexArray.shift();
   let secondItemIndex = indexArray.shift();
@@ -94,7 +93,6 @@ function handleClick(event) {
     resultData.removeEventListener('click', handleClick);
     renderChart();
     let stringifiedItems = JSON.stringify(allItems);
-    // console.log(stringifiedItems);
     localStorage.setItem('items', stringifiedItems);
   }
 }
